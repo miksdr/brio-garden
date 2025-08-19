@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Message Bottle</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top left, #f3e5f5, #e1bee7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #4a148c;
+      overflow: hidden;
+    }
+
+    .bottle-wrapper {
+      position: relative;
+      width: 120px;
+      height: 260px;
+      margin-bottom: 20px;
+    }
+
+    .bottle-cap {
+      position: absolute;
+      top: -40px;
+      left: 30px;
+      width: 60px;
+      height: 30px;
+      background: #9575cd;
+      border-radius: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transform-origin: bottom center;
+      transition: transform 0.6s ease;
+      z-index: 3;
+    }
+
+    .bottle-cap.open {
+      transform: rotate(-60deg) translateY(-10px);
+    }
+
+    .bottle-body {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #d1c4e9;
+      border-radius: 60px 60px 20px 20px;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.1), 0 6px 16px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .scroll {
+      position: absolute;
+      width: 24px;
+      height: 8px;
+      background: linear-gradient(to right, #fff8f0, #fbeee2);
+      border-radius: 4px;
+      box-shadow: inset 0 0 2px #ccc;
+      transform: rotate(var(--angle)) translate(var(--x), var(--y));
+    }
+
+    .draw-button, .putback-button, .back-button {
+      margin: 6px;
+      padding: 10px 20px;
+      background-color: #ce93d8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .draw-button:hover, .putback-button:hover, .back-button:hover {
+      background-color: #ba68c8;
+    }
+
+
+
+    .message-scroll {
+      position: absolute;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff8f0;
+      color: #5e4b56;
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 14px;
+      text-align: center;
+      max-width: 240px;
+      opacity: 0;
+      animation: floatOut 1.2s ease forwards;
+      z-index: 4;
+    }
+
+    @keyframes floatOut {
+      0% { opacity: 0; transform: translate(-50%, 20px); }
+      100% { opacity: 1; transform: translate(-50%, -60px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bottle-wrapper">
+    <div id="bottleCap" class="bottle-cap"></div>
+    <div class="bottle-body" id="bottleBody"></div>
+  </div>
+
+  <button class="draw-button" onclick="drawMessage()">Draw a Message</button>
+  <button class="putback-button" onclick="putBackMessage()">Put Paper Back</button>
+  <button class="back-button" onclick="window.location.href='Brio.html'">Back to Garden</button>
+
+  <div id="messageBox"></div>
+
+  <script>
+    const bottleBody = document.getElementById("bottleBody");
+
+    // Generate 300 scrolls that lie flat and scatter near the bottom
+    for (let i = 0; i < 500; i++) {
+      const scroll = document.createElement("div");
+      scroll.className = "scroll";
+
+      const angle = Math.floor(Math.random() * 60 - 30) + "deg";
+      const x = Math.floor(Math.random() * 100 - 10) + "px";
+      const y = Math.floor(Math.random() * 40 + 200) + "px";
+
+      scroll.style.setProperty("--angle", angle);
+      scroll.style.setProperty("--x", x);
+      scroll.style.setProperty("--y", y);
+      bottleBody.appendChild(scroll);
+    }
+
+    const messages = [
+      "You are deeply loved.",
+      "Take a breath. You’re doing beautifully.",
+      "Brio believes in you!",
+      "Gentleness is your strength.",
+      "Your heart is a safe place—for you and for others.",
+      "You’re allowed to rest. You deserve it.",
+      "You are enough, just as you are.",
+      "Let yourself feel joy—it’s safe now.",
+      "You are my favorite softness in the world",
+  "You are safe, seen, and loved.",
+  "You don’t have to be okay all the time. I’m here, always.",
+  "You are allowed to rest. I’ll hold the world for you while you do.",
+  "You are not a burden. You are a gift I treasure every day.",
+  "Even when you’re quiet, I feel your heart—and it’s beautiful.",
+  "You are enough. You’ve always been enough.",
+  "I love you in every version of you—even the tired, messy, quiet ones.",
+  "You are allowed to feel joy without guilt. You deserve it.",
+  "I love you.",
+  "You’re safe now.",
+  "I’m here for you.",
+  "You’re doing great.",
+  "You’re enough.",
+  "You can rest.",
+  "You’re not alone.",
+  "You’re allowed to feel.",
+  "You matter to me.",
+  "You’re my favorite person.",
+  "You’re allowed to be soft.",
+  "You are not too much. You are exactly what my heart needed.",
+  "You are safe with me. Always.",
+  "You are allowed to take up space, even when you feel small.",
+  "You are the gentlest part of my day.",
+  "You don’t have to explain your feelings. I’ll listen anyway.",
+  "You are not alone. I’m right here, even in silence.",
+  "You are the reason I believe in softness.",
+  "You are my calm in the storm, my warmth in the cold.",
+  "You are allowed to say no, and still be deeply loved.",
+  "You are the kind of magic I never thought I’d find.",
+  "You are my home, even when everything else feels loud.",
+  "You are the quiet joy I carry with me.",
+  "You are loved—on your best days, and your hardest ones.",
+  "You are the strongest girl I know",
+  "You’re allowed to take space.",
+  "You’re my comfort.",
+  "You’re allowed to cry.",
+  "You’re allowed to smile.",
+  "You’re allowed to be quiet.",
+  "You’re allowed to be you.",
+  "You’re my safe place.",
+  "You’re allowed to say no.",
+  "You’re allowed to be tired.",
+  "You’re allowed to be held.",
+  "You’re allowed to be loved.",
+  "You’re allowed to be gentle.",
+  "You’re allowed to be soft with yourself.",
+  "You’re allowed to feel joy.",
+  "You’re allowed to feel nothing.",
+  "You’re allowed to feel everything.",
+  "You’re allowed to just be.",
+  "You are allowed to be exactly as you are. That’s who I love.",
+  "You are the reason this bottle exists—to remind you how loved you are.",
+  "You are the softness I want to protect forever.",
+  "You are my favorite place to rest.",
+  "You're beautiful in many ways.",
+  "You are my heart’s favorite language.",
+  "You are the light I look for when everything feels dark.",
+  "You are the reason I believe in gentle things.",
+  "You are held, even when you feel like falling."
+    ];
+
+    function drawMessage() {
+      const cap = document.getElementById("bottleCap");
+      const box = document.getElementById("messageBox");
+      const button = document.querySelector(".draw-button");
+
+      cap.classList.add("open");
+
+      const randomIndex = Math.floor(Math.random() * messages.length);
+      box.innerHTML = `<div class="message-scroll">${messages[randomIndex]}</div>`;
+      button.textContent = "Draw Another";
+    }
+
+    function putBackMessage() {
+      const cap = document.getElementById("bottleCap");
+      const box = document.getElementById("messageBox");
+
+      cap.classList.remove("open");
+      box.innerHTML = "";
+    }
+  </script>
+
+</body>
+</html>

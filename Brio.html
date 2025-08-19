@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Brio's Garden</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ede7f6;
+      color: #4a148c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+    }
+
+    .image-wrapper {
+      height: 50vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 40px;
+      border-bottom: 1px solid #d1c4e9;
+      box-sizing: border-box;
+    }
+
+    #brioImage {
+      max-height: 100%;
+      width: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(74, 20, 140, 0.2);
+      transition: all 0.5s ease;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 600px;
+    }
+
+    p {
+      font-size: 16px;
+      margin: 10px 0;
+      line-height: 1.5;
+    }
+
+    #extraMessage {
+      font-size: 16px;
+      font-style: italic;
+      display: none;
+      color: #6a1b9a;
+      margin-top: 10px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .or-text {
+      text-align: center;
+      margin: 8px 0;
+      font-size: 14px;
+      color: #7e57c2;
+      font-style: italic;
+      opacity: 0.8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      margin-top: 12px;
+      padding: 10px 24px;
+      font-size: 14px;
+      background-color: #ce93d8;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #ba68c8;
+      transform: scale(1.03);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 30%, #f3e5f5 0%, #e1bee7 100%);
+      animation: backgroundFlow 12s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes backgroundFlow {
+      0% {
+        background-position: 0% 50%;
+        filter: brightness(1);
+      }
+      50% {
+        background-position: 100% 50%;
+        filter: brightness(1.05);
+      }
+      100% {
+        background-position: 0% 50%;
+        filter: brightness(1);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="image-wrapper">
+    <img id="brioImage" src="garden.png" alt="Garden with swing">
+  </div>
+
+  <div class="content">
+    <p id="question">Do you want to see Brio? Click this when you do.</p>
+
+    <button id="showButton" onclick="showBrio()">Show Brio</button>
+
+    <div id="extraMessage">
+      <p>
+        Brio’s here now, bringing flowers and a warm smile just for you.<br>
+        She’s happy to be seen, and she’ll stay as long as you want.<br><br>
+        If you’d like to enjoy the garden on your own again, just click below.
+      </p>
+    </div>
+
+    <button id="backButton" onclick="goBack()" style="display: none;">Me Time</button>
+
+    <div id="orMessage" class="hidden">
+      <p class="or-text">— or —</p>
+    </div>
+
+    <div id="bottleButton" class="hidden">
+      <button onclick="window.location.href='message-bottle.html'">Open Message Bottle</button>
+    </div>
+  </div>
+
+  <script>
+    function showBrio() {
+      document.getElementById("brioImage").src = "brio.png";
+      document.getElementById("question").style.display = "none";
+      document.getElementById("showButton").style.display = "none";
+      document.getElementById("extraMessage").style.display = "block";
+      document.getElementById("backButton").style.display = "inline-block";
+      document.getElementById("orMessage").classList.remove("hidden");
+      document.getElementById("bottleButton").classList.remove("hidden");
+    }
+
+    function goBack() {
+      document.getElementById("brioImage").src = "garden.png";
+      document.getElementById("question").style.display = "block";
+      document.getElementById("showButton").style.display = "inline-block";
+      document.getElementById("extraMessage").style.display = "none";
+      document.getElementById("backButton").style.display = "none";
+      document.getElementById("orMessage").classList.add("hidden");
+      document.getElementById("bottleButton").classList.add("hidden");
+    }
+  </script>
+
+</body>
+</html>
